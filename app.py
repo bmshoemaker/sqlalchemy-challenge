@@ -90,7 +90,13 @@ def tobs():
     return jsonify(all_tobs)
 
 # Start Only Route
-#@app.route("/api/v1.0/<start>")
+@app.route("/api/v1.0/<start>")
+def start_date(start):
+    lowest_temp = session.query(func.min(measurement.tobs))\
+        .filter(measurement.station == 'USC00519281')\
+        .filter(measurement.date == start_date)\
+        .all()
+        
 # Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
 # When given the start only, calculate TMIN, TAVG, and TMAX for all dates greater than and equal to the start date.
 

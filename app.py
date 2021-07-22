@@ -68,7 +68,7 @@ def precipitation():
 @app.route("/api/v1.0/stations")
 def stations():
     #Design a query to retrieve the stations
-    stations = session.query(station.station).all()
+    stations = session.query(station.station).distinct().all()
     #Return a JSON list of stations from the dataset.
     return jsonify(stations)
 

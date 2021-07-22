@@ -77,11 +77,17 @@ def stations():
 def tobs():
     # Query the dates and temperature observations of the most active station for the last year of data.
     query_date = dt.date(2017, 8, 23) - dt.timedelta(days=365)
-    active_station = session.query(measurement.tobs).\
+    active_station = session.query(measurement.date, measurement.tobs).\
         filter(measurement.date >= query_date).\
         filter(measurement.station == 'USC00519281')
+    all_tobs = []
+    for date, tobs in active_station:
+        tobs_dict = {}
+        tobs_dict['date'] = date
+        tobs_dict['tobs'] = tobs
+        all_tobs.append(tobs_dict)
     # Return a JSON list of temperature observations (TOBS) for the previous year.
-    return jsonify(active_station)
+    return jsonify(all_tobs)
 
 
 # Start Only Route

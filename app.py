@@ -1,4 +1,6 @@
 import numpy as np
+import pandas as pd
+import datetime as dt
 
 import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
@@ -22,13 +24,13 @@ Base.prepare(engine, reflect=True)
 station = Base.classes.station
 measurement = Base.classes.measurement
 
+# Create a database session object
+session = Session(engine)
+
 #################################################
 # Flask Setup
 #################################################
 app = Flask(__name__)
-
-# Create a database session object
-session = Session(engine)
 
 #################################################
 # Flask Routes
@@ -51,8 +53,16 @@ def welcome():
 
 # Precipitation Route
 @app.route("/api/v1.0/precipitation")
-# Convert the query results to a dictionary using date as the key and prcp as the value.
-# Return the JSON representation of your dictionary.
+def precipitation():
+    # Design a query to retrieve the last 12 months of precipitation data and plot the results.
+    query_date = dt.date(2017, 8, 23) - dt.timedelta(days=365)
+    # Perform a query to retrieve the date and precipitation scores
+    date_prcp_data = session.query(measurement.date, measurement.prcp).\
+        filter(measurement.date >= query_date).all()
+    # Convert the query results to a dictionary using date as the key and prcp as the value.
+    prcp_dict = dict(date_prcp_data)
+    # Return the JSON representation of your dictionary.
+    return jsonify(prcp_dict)
 
 # Stations Route
 #@app.route("/api/v1.0/stations")

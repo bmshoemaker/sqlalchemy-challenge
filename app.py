@@ -27,6 +27,8 @@ measurement = Base.classes.measurement
 #################################################
 app = Flask(__name__)
 
+# Create a database session object
+session = Session(engine)
 
 #################################################
 # Flask Routes

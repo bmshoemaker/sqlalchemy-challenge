@@ -49,8 +49,8 @@ def welcome():
     )
 
 
-#Precipitation Route
-#@app.route("/api/v1.0/precipitation")
+# Precipitation Route
+@app.route("/api/v1.0/precipitation")
 # Convert the query results to a dictionary using date as the key and prcp as the value.
 # Return the JSON representation of your dictionary.
 

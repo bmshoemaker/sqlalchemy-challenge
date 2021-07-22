@@ -91,11 +91,11 @@ def tobs():
 
 #filter(measurement.station == 'USC00519281').\
 # Start Only Route
-@app.route("/api/v1.0/start/<input_start>")
-def start(input_start):
+@app.route("/api/v1.0/<start>")
+def start_date_data(start):
     # When given the start only, calculate TMIN, TAVG, and TMAX for all dates greater than and equal to the start date.
     results = session.query(measurement.date, func.min(measurement.tobs), func.avg(measurement.tobs), func.max(measurement.tobs)).\
-        filter(measurement.date >= input_start).all()
+        filter(measurement.date >= start).all()
     return_json=[]
     for each_result in results:
         return_json.append([each_result[0], each_result[1], each_result[2], each_result[3]])

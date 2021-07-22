@@ -13,7 +13,7 @@ from flask import Flask, jsonify
 #################################################
 # Database Setup
 #################################################
-engine = create_engine("sqlite:///Resources/hawaii.sqlite")
+engine = create_engine("sqlite:///Resources/hawaii.sqlite", echo=True)
 
 # reflect an existing database into a new model
 Base = automap_base()
@@ -89,16 +89,18 @@ def tobs():
     # Return a JSON list of temperature observations (TOBS) for the previous year.
     return jsonify(all_tobs)
 
+#filter(measurement.station == 'USC00519281').\
 # Start Only Route
-@app.route("/api/v1.0/<start>")
-def start_date(start):
-    lowest_temp = session.query(func.min(measurement.tobs))\
-        .filter(measurement.station == 'USC00519281')\
-        .filter(measurement.date == start_date)\
-        .all()
-        
-# Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
-# When given the start only, calculate TMIN, TAVG, and TMAX for all dates greater than and equal to the start date.
+@app.route("/api/v1.0/start/<input_start>")
+def start(input_start):
+    # When given the start only, calculate TMIN, TAVG, and TMAX for all dates greater than and equal to the start date.
+    results = session.query(measurement.date, func.min(measurement.tobs), func.avg(measurement.tobs), func.max(measurement.tobs)).\
+        filter(measurement.date >= input_start).all()
+    return_json=[]
+    for each_result in results:
+        return_json.append([each_result[0], each_result[1], each_result[2], each_result[3]])
+    # Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
+    return jsonify(return_json)
 
 #Start and End Route
 #@app.route("/api/v1.0/<start>/<end>")

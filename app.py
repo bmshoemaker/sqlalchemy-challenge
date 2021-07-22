@@ -89,13 +89,13 @@ def tobs():
     # Return a JSON list of temperature observations (TOBS) for the previous year.
     return jsonify(all_tobs)
 
-#filter(measurement.station == 'USC00519281').\
 # Start Only Route
 @app.route("/api/v1.0/<start>")
 def start_date_data(start):
     # When given the start only, calculate TMIN, TAVG, and TMAX for all dates greater than and equal to the start date.
     results = session.query(measurement.date, func.min(measurement.tobs), func.avg(measurement.tobs), func.max(measurement.tobs)).\
-        filter(measurement.date >= start).all()
+        filter(measurement.date >= start).\
+        group_by(measurement.date).all()
     return_json=[]
     for each_result in results:
         return_json.append([each_result[0], each_result[1], each_result[2], each_result[3]])
@@ -103,11 +103,17 @@ def start_date_data(start):
     return jsonify(return_json)
 
 #Start and End Route
-#@app.route("/api/v1.0/<start>/<end>")
+@app.route("/api/v1.0/<start>/<end>")
+def start_end(start, end):
 # Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
 # When given the start and the end date, calculate the TMIN, TAVG, and TMAX for dates between the start and end date inclusive.
-
-# Disconnect session
+    results_end = session.query(measurement.date, func.min(measurement.tobs), func.avg(measurement.tobs), func.max(measurement.tobs)).\
+        filter(measurement.date >= start).\
+        filter(measurement.date <= end).\
+        group_by(measurement.date).all()
+    return_end_json=[]
+    for each_result in results_end:
+        return_end_json.append([each_result[0], each_result[1], each_result[2], each_result[3]])
 
 
 if __name__ == "__main__":

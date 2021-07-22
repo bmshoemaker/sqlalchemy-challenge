@@ -72,10 +72,17 @@ def stations():
     #Return a JSON list of stations from the dataset.
     return jsonify(stations)
 
-#Temperature Route
-#@app.route("/api/v1.0/tobs")
-# Query the dates and temperature observations of the most active station for the last year of data.
-# Return a JSON list of temperature observations (TOBS) for the previous year.
+# Temperature Route
+@app.route("/api/v1.0/tobs")
+def tobs():
+    # Query the dates and temperature observations of the most active station for the last year of data.
+    query_date = dt.date(2017, 8, 23) - dt.timedelta(days=365)
+    active_station = session.query(measurement.tobs).\
+        filter(measurement.date >= query_date).\
+        filter(measurement.station == 'USC00519281')
+    # Return a JSON list of temperature observations (TOBS) for the previous year.
+    return jsonify(active_station)
+
 
 # Start Only Route
 #@app.route("/api/v1.0/<start>")
@@ -86,6 +93,8 @@ def stations():
 #@app.route("/api/v1.0/<start>/<end>")
 # Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
 # When given the start and the end date, calculate the TMIN, TAVG, and TMAX for dates between the start and end date inclusive.
+
+# Disconnect session
 
 
 if __name__ == "__main__":

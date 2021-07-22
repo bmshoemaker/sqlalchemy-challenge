@@ -89,7 +89,6 @@ def tobs():
     # Return a JSON list of temperature observations (TOBS) for the previous year.
     return jsonify(all_tobs)
 
-
 # Start Only Route
 #@app.route("/api/v1.0/<start>")
 # Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.

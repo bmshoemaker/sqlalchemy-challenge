@@ -109,12 +109,14 @@ def start_end(start, end):
 # When given the start and the end date, calculate the TMIN, TAVG, and TMAX for dates between the start and end date inclusive.
     results_end = session.query(measurement.date, func.min(measurement.tobs), func.avg(measurement.tobs), func.max(measurement.tobs)).\
         filter(measurement.date >= start).\
-        filter(measurement.date <= end).\
-        group_by(measurement.date).all()
+        filter(measurement.date <= end)
+        #group_by(measurement.date).all()
     return_end_json=[]
     for each_result in results_end:
         return_end_json.append([each_result[0], each_result[1], each_result[2], each_result[3]])
 
+# Close session
+session.close()
 
 if __name__ == "__main__":
     app.run(debug=True)
